@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     @IBAction func buttonsPressed(_ sender: UIButton) {
         
         
-        if  {
+        if (true) {
             questionLabel.text = quiz.randomElement()
         } else if answerFalse {
             questionLabel.text = "Please Try again!"
