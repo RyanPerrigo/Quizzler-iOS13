@@ -27,6 +27,10 @@ class ViewController: UIViewController {
       updateUI()
     
     }
+    @objc func endOfGame () {
+        questionNumber = 0
+        updateUI()
+    }
     @objc func nextQuestion () {
         questionLabel.text = quiz[questionNumber][0]
     }
@@ -42,15 +46,16 @@ class ViewController: UIViewController {
                 
             
             //inner if-else
-            if questionNumber < 2 { //Correct answer AND question is less than 3
+            if questionNumber + 1 < quiz.count { //Correct answer AND question is less than 3
                 
                 timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(nextQuestion), userInfo: nil, repeats: false)
                 
                 questionNumber = questionNumber + 1
                 
             } else { //question number is 2 or more (end of the game)
-                questionLabel.text = "Thanks for Playa hata!!"
+                questionLabel.text = "Thanks For Playing!!"
                 
+                timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(endOfGame), userInfo: nil, repeats: false)
                 
                 
                 
