@@ -15,7 +15,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
     
-    let quiz = [["Q1","False"],["Q2","True"],["Q3","False"]]
+   
+    let quiz = [
+    Question(question: "Q1", answer: "True"),
+    Question(question: "Q2", answer: "False"),
+    Question(question: "Q3", answer: "True")
+    ]
+    
+    
+    
     var questionNumber = 0
     var timer:  Timer?
     
@@ -23,39 +31,40 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-      updateUI()
+        progressBar.progress = 0
+        updateUI()
     
     }
     @objc func endOfGame () {
         questionNumber = 0
         updateUI()
+        progressBar.progress = 0
     }
-    @objc func nextQuestion () {
-        questionLabel.text = quiz[questionNumber][0]
-    }
-    @objc func retryAnswer () {
-  questionLabel.text = quiz[questionNumber][0]
-    }
+    
     @IBAction func buttonsPressed(_ sender: UIButton) {
         let userAnswer = sender.currentTitle
-        let actualAnswer = quiz[questionNumber][1]
+        let actualQuestion = quiz[questionNumber]
+        let actualAnswer = actualQuestion.answer
         
         if userAnswer == actualAnswer { //Correct answer!!!
             questionLabel.text = "Your Right!!"
+            sender.backgroundColor = UIColor.green
+                
                 
             
             //inner if-else
             if questionNumber + 1 < quiz.count { //Correct answer AND question is less than 3
-                
-                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(nextQuestion), userInfo: nil, repeats: false)
-                
                 questionNumber = questionNumber + 1
+                progressBar.progress = Float(questionNumber) / Float(quiz.count)
+
+                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
+                
+                
                 
             } else { //question number is 2 or more (end of the game)
                 questionLabel.text = "Thanks For Playing!!"
-                
-                timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(endOfGame), userInfo: nil, repeats: false)
+                progressBar.progress = 1
+                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(endOfGame), userInfo: nil, repeats: false)
                 
                 
                 
@@ -65,14 +74,17 @@ class ViewController: UIViewController {
             
         } else { //WRONG ANSWER!!!
             questionLabel.text = "Please try again!"
-            timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(retryAnswer), userInfo: nil, repeats: false)
+            sender.backgroundColor = UIColor.red
+            timer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
         }
         
     }
     
-func updateUI () {
-    questionLabel.text = quiz[questionNumber][0]
-
+@objc func updateUI () {
+    questionLabel.text = quiz[questionNumber].question
+    progressBar.progress = Float(questionNumber) / Float(quiz.count)
+    trueButton.backgroundColor = UIColor.clear
+    falseButton.backgroundColor = UIColor.clear
 }
 }
 //if questions.randomElement() && answerTrue {
